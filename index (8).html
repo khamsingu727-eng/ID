@@ -1,0 +1,2517 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ຫວຍໄອດີ • ລະບົບສັ່ງຊື້ເລກຫວຍພັດທະນາ (ເລກ 2-6 ໂຕ)</title>
+
+  <!-- Google Font: Noto Sans Lao -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            lao: ['"Noto Sans Lao"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              orange: '#F25C19',
+              dark: '#C94408',
+              soft: '#FFF3EC',
+              border: '#FFD4BE',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    * {
+      font-family: 'Noto Sans Lao', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      background-color: #FFF8F4;
+      color: #1E293B;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .animate-pop {
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes spinWheel {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(1080deg); }
+    }
+
+    .wheel-spinning {
+      animation: spinWheel 1.3s cubic-bezier(0.18, 0.89, 0.32, 1.02) forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#FFF8F4] text-slate-800 antialiased selection:bg-[#F25C19] selection:text-white">
+
+  <!-- Mobile-First App Shell -->
+  <div class="max-w-md mx-auto min-h-screen bg-white shadow-xl flex flex-col relative pb-24">
+
+    <!-- 1. HEADER SECTION -->
+    <header class="bg-gradient-to-br from-[#F25C19] via-[#F25C19] to-[#D94A0B] text-white px-4 pt-4 pb-5 rounded-b-3xl shadow-md">
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-1.5 text-orange-100 text-xs font-medium">
+            <span>ສະບາຍດີ</span>
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+            <span class="truncate font-semibold text-white/95">ຫວຍໄອດີ</span>
+          </div>
+
+          <div class="mt-1 flex items-center gap-2">
+            <button
+              type="button"
+              onclick="openModal('edit_profile')"
+              class="group flex items-center gap-1.5 text-left bg-white/15 hover:bg-white/25 active:scale-95 px-2.5 py-1 rounded-xl transition max-w-full"
+              title="ແຕະເພື່ອແກ້ໄຂຊື່ / ເບີໂທ"
+            >
+              <span id="userProfileDisplay" class="font-bold text-sm sm:text-base truncate">020 9528 1677</span>
+              <svg class="w-3.5 h-3.5 text-orange-100 shrink-0 group-hover:text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onclick="openModal('bills')"
+          class="relative bg-white text-[#F25C19] hover:bg-orange-50 active:scale-95 font-bold text-xs sm:text-sm px-3.5 py-2 rounded-2xl shadow flex items-center gap-1.5 transition shrink-0"
+        >
+          <span>🧾</span>
+          <span>ເບິ່ງບິນ</span>
+          <span
+            id="headerBillBadge"
+            class="bg-[#F25C19] text-white text-[11px] font-extrabold px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-tight"
+          >0</span>
+        </button>
+      </div>
+
+      <div class="mt-3.5 bg-white/15 backdrop-blur-xs border border-white/25 rounded-2xl p-3 flex items-center justify-between gap-2">
+        <div class="space-y-1 min-w-0">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-orange-100">ລະຫັດແນະນຳ:</span>
+            <button
+              type="button"
+              onclick="copyReferralCode()"
+              class="font-extrabold tracking-wide bg-white text-[#F25C19] px-2 py-0.5 rounded-lg text-xs active:scale-95 transition"
+            >
+              <span id="referralCodeText">ID8899</span> 📋
+            </button>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs text-orange-50">
+            <span>⭐ ຄະແນນສະສົມ:</span>
+            <span id="loyaltyPointsText" class="font-extrabold text-white">120</span>
+            <span>ພອຍ</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onclick="openModal('income')"
+          class="bg-white/20 hover:bg-white/30 active:scale-95 border border-white/30 text-white text-[11px] sm:text-xs font-bold px-3 py-2 rounded-xl text-center leading-snug transition shrink-0"
+        >
+          ສ້າງລາຍໄດ້ /<br />ເບິ່ງລາຍລະອຽດ
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="px-4 pt-4 space-y-4 flex-1">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-6 rounded-full bg-[#F25C19]"></span>
+          <h1 class="text-base sm:text-lg font-extrabold text-slate-900">ເລກ 2-6 ໂຕ</h1>
+        </div>
+        <span class="text-[11px] font-bold text-[#F25C19] bg-[#FFF3EC] border border-[#FFD4BE] px-2.5 py-1 rounded-full">
+          ຫວຍພັດທະນາ
+        </span>
+      </div>
+
+      <!-- QUICK INPUT BAR -->
+      <section class="bg-[#FFF8F4] border border-[#FFD4BE] rounded-2xl p-3 space-y-2.5 shadow-2xs">
+        <div class="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onclick="openModal('tamlah')"
+            class="bg-emerald-100 hover:bg-emerald-200 active:scale-95 text-emerald-900 border border-emerald-300 font-extrabold text-xs sm:text-sm py-2 rounded-xl transition flex items-center justify-center gap-1"
+          >
+            <span>📖</span>
+            <span>ຕຳລາ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('random')"
+            class="bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-extrabold text-xs sm:text-sm py-2 rounded-xl shadow-xs transition flex items-center justify-center gap-1"
+          >
+            <span>🎲</span>
+            <span>ສຸ່ມ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('swap')"
+            class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm py-2 rounded-xl shadow-xs transition flex items-center justify-center gap-1"
+          >
+            <span>🔀</span>
+            <span>ສະຫຼັບ</span>
+          </button>
+        </div>
+
+        <form onsubmit="handleQuickAdd(event)" class="grid grid-cols-12 gap-2 items-stretch">
+          <div class="col-span-4">
+            <label for="quickNumberInput" class="block text-[10px] font-bold text-slate-500 mb-0.5">ປ້ອນເລກ (2-6)</label>
+            <input
+              id="quickNumberInput"
+              type="text"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="ເຊັ່ນ 24"
+              oninput="sanitizeDigitInput(this, 6)"
+              class="w-full bg-white border border-slate-300 focus:border-[#F25C19] focus:ring-2 focus:ring-[#F25C19]/20 rounded-xl px-2.5 py-2 text-sm font-extrabold text-slate-900 outline-none text-center tracking-wider"
+            />
+          </div>
+
+          <div class="col-span-5">
+            <label for="quickAmountInput" class="block text-[10px] font-bold text-slate-500 mb-0.5">ຈຳນວນເງິນ (ກີບ)</label>
+            <input
+              id="quickAmountInput"
+              type="number"
+              inputmode="numeric"
+              min="1000"
+              step="1000"
+              value="5000"
+              class="w-full bg-white border border-slate-300 focus:border-[#F25C19] focus:ring-2 focus:ring-[#F25C19]/20 rounded-xl px-2.5 py-2 text-sm font-extrabold text-slate-900 outline-none text-right"
+            />
+          </div>
+
+          <div class="col-span-3 flex flex-col justify-end">
+            <button
+              type="submit"
+              class="w-full h-[38px] bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow transition flex items-center justify-center"
+            >
+              + ເພີ່ມ
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- DRAW COUNTDOWN CARD -->
+      <section class="bg-white border-2 border-[#FFD4BE] rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 shrink-0">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F25C19] to-[#C94408] text-white flex flex-col items-center justify-center shadow-sm select-none">
+            <span class="text-[10px] font-extrabold leading-none tracking-tight">ຫວຍ</span>
+            <span class="text-sm font-extrabold leading-tight">ໄອດີ</span>
+          </div>
+          <div>
+            <div class="text-xs font-extrabold text-[#F25C19]">ຫວຍໄອດີ</div>
+            <div id="drawDateDisplay" class="text-xs font-bold text-slate-700 mt-0.5">ງວດວັນທີ --/--/----</div>
+          </div>
+        </div>
+
+        <div class="text-right bg-[#FFF3EC] border border-[#FFD4BE] rounded-xl px-3 py-2">
+          <div class="text-[10px] font-bold text-[#C94408]">ຈະປິດຂາຍໃນເວລາ:</div>
+          <div id="countdownTimer" class="text-sm sm:text-base font-extrabold text-[#F25C19] tabular-nums tracking-wider mt-0.5">
+            00:00:00
+          </div>
+        </div>
+      </section>
+
+      <!-- GRID ICONS -->
+      <section class="pt-0.5">
+        <div class="grid grid-cols-3 gap-2.5">
+          <button
+            type="button"
+            onclick="openModal('random_chaotic')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🤑</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ເສດຖີສຸ່ມມົ້ວ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('results')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🏆</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ຜົນຫວຍ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('bills')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🧾</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ເບິ່ງບິນ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('powder_rub')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🪔</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ທາແປ້ງຂໍເລກ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('guru_picks')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🔮</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ເລກເດັດອາຈານດັງ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('dream_random')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🌙</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ສຸ່ມຕາມຄວາມຝັນ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('kuman_thong')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🧸</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ຂໍເລກນຳກຸມມານທອງ</span>
+          </button>
+
+          <button
+            type="button"
+            onclick="openModal('lucky_wheel')"
+            class="bg-white hover:bg-[#FFF8F4] active:scale-95 border border-orange-100 hover:border-[#FFD4BE] rounded-2xl p-3 shadow-2xs flex flex-col items-center justify-center text-center gap-1.5 transition"
+          >
+            <span class="text-2xl">🎡</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight">ວົງລໍ້ທັງໂຊກທັງລວຍ</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- STICKY BOTTOM CART BAR -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/95 backdrop-blur-md border-t border-[#FFD4BE] px-4 py-2.5 shadow-lg z-30">
+      <div class="flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onclick="openModal('cart')"
+          class="flex-1 bg-[#FFF3EC] hover:bg-orange-100 active:scale-[0.99] border border-[#FFD4BE] rounded-2xl px-3.5 py-2 flex items-center justify-between transition"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🛒</span>
+            <div class="text-left">
+              <div class="text-xs font-extrabold text-slate-900">
+                ກະຕ່າສິນຄ້າ (<span id="footerCartBadge" class="text-[#F25C19]">0</span>)
+              </div>
+              <div id="footerCartTotal" class="text-xs font-extrabold text-[#F25C19]">ລວມ: 0 ກີບ</div>
+            </div>
+          </div>
+          <span class="text-xs font-extrabold text-[#F25C19] bg-white px-2.5 py-1 rounded-xl border border-[#FFD4BE]">
+            ເບິ່ງກະຕ່າ
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONTAINER -->
+  <div id="modalBackdrop" class="fixed inset-0 bg-black/55 backdrop-blur-[2px] z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div id="modalCard" class="animate-pop bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="bg-[#F25C19] text-white px-4 py-3.5 flex items-center justify-between gap-2 shrink-0">
+        <h2 id="modalTitle" class="font-extrabold text-base sm:text-lg truncate">ຫົວຂໍ້</h2>
+        <button
+          type="button"
+          onclick="closeModal()"
+          class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 active:scale-90 flex items-center justify-center font-extrabold text-sm transition shrink-0"
+          aria-label="ປິດໜ້າຕ່າງ"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div id="modalBody" class="p-4 overflow-y-auto flex-1 space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 transition-all duration-200 max-w-xs w-[90%]">
+    <div id="toastText" class="bg-slate-900/95 text-white text-xs sm:text-sm font-bold text-center px-4 py-2.5 rounded-2xl shadow-xl border border-white/15"></div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // CONFIGURATION & CONSTANTS
+    // =========================================================================
+    const SHOP_NAME = 'ຫວຍໄອດີ';
+    const WHATSAPP_LOCAL = '02095281677';
+    const WHATSAPP_ORDER_URL = 'https://wa.me/message/C4I2RDW46C3YH1';
+    const MESSENGER_USERNAME = 'khamsing';
+    const MESSENGER_ORDER_URL = 'https://m.me/61591124842145?hash=I8UDrJnhCryOq1eu&source=qr';
+    const QR_ACCOUNT_HOLDER = 'KHAMSING TAMONG MR';
+    const QR_IMAGE_URL = 'https://i.ibb.co/Ps9h8fzr/IMG-20261122-223652.jpg';
+    const QR_FALLBACK_URL = 'https://placehold.co/320x320/FFF8F4/F25C19?text=LAO+QR+%7C+KHAMSING';
+    const STORAGE_KEY = 'HUAY_ID_STATE_V1';
+    const MANUAL_RESULT_KEY = 'HUAY_ID_MANUAL_DRAW_RESULT_V1';
+
+    // 40 Lao Animal Dream Chart Groups (01-40 matching image chart)
+    const ANIMAL_GROUPS = [
+      { id: 1, name: 'ປານ້ອຍ', emoji: '🐟', numbers: ['01', '41', '81'] },
+      { id: 2, name: 'ຫອຍ', emoji: '🐌', numbers: ['02', '42', '82'] },
+      { id: 3, name: 'ຫ່ານ', emoji: '🦢', numbers: ['03', '43', '83'] },
+      { id: 4, name: 'ນົກຍູງ', emoji: '🦚', numbers: ['04', '44', '84'] },
+      { id: 5, name: 'ສິງ', emoji: '🦁', numbers: ['05', '45', '85'] },
+      { id: 6, name: 'ເສືອ', emoji: '🐅', numbers: ['06', '46', '86'] },
+      { id: 7, name: 'ໝູ', emoji: '🐖', numbers: ['07', '47', '87'] },
+      { id: 8, name: 'ກະຕ່າຍ', emoji: '🐇', numbers: ['08', '48', '88'] },
+      { id: 9, name: 'ຄວາຍ', emoji: '🐃', numbers: ['09', '49', '89'] },
+      { id: 10, name: 'ນາກນ້ຳ', emoji: '🦦', numbers: ['10', '50', '90'] },
+      { id: 11, name: 'ໝາ', emoji: '🐕', numbers: ['11', '51', '91'] },
+      { id: 12, name: 'ມ້າ', emoji: '🐎', numbers: ['12', '52', '92'] },
+      { id: 13, name: 'ຊ້າງ', emoji: '🐘', numbers: ['13', '53', '93'] },
+      { id: 14, name: 'ແມວ', emoji: '🐈', numbers: ['14', '54', '94'] },
+      { id: 15, name: 'ໜູ', emoji: '🐁', numbers: ['15', '55', '95'] },
+      { id: 16, name: 'ເຜິ້ງ', emoji: '🐝', numbers: ['16', '56', '96'] },
+      { id: 17, name: 'ນົກຍາງ', emoji: '🦩', numbers: ['17', '57', '97'] },
+      { id: 18, name: 'ແມວປ່າ', emoji: '🐈‍⬛', numbers: ['18', '58', '98'] },
+      { id: 19, name: 'ກະເບື້ອ', emoji: '🦋', numbers: ['19', '59', '99'] },
+      { id: 20, name: 'ຂີ້ເຂັບ', emoji: ' centipede', numbers: ['20', '60', '00'] },
+      { id: 21, name: 'ນົກແອ່ນ', emoji: '🐦', numbers: ['21', '61'] },
+      { id: 22, name: 'ນົກກາງແກ', emoji: '🕊️', numbers: ['22', '62'] },
+      { id: 23, name: 'ລີງ', emoji: '🐒', numbers: ['23', '63'] },
+      { id: 24, name: 'ກົບ', emoji: '🐸', numbers: ['24', '64'] },
+      { id: 25, name: 'ແຫຍ່ວ', emoji: '🦅', numbers: ['25', '65'] },
+      { id: 26, name: 'ນາກບິນ', emoji: '🐉', numbers: ['26', '66'] },
+      { id: 27, name: 'ເຕົ່າ', emoji: '🐢', numbers: ['27', '67'] },
+      { id: 28, name: 'ໄກ່', emoji: '🐓', numbers: ['28', '68'] },
+      { id: 29, name: 'ອ່ຽນ', emoji: '🐍', numbers: ['29', '69'] },
+      { id: 30, name: 'ປາໃຫຍ່', emoji: '🦈', numbers: ['30', '70'] },
+      { id: 31, name: 'ກຸ້ງ', emoji: '🦐', numbers: ['31', '71'] },
+      { id: 32, name: 'ງູ', emoji: '🐍', numbers: ['32', '72'] },
+      { id: 33, name: 'ແມງມຸມ', emoji: '🕷️', numbers: ['33', '73'] },
+      { id: 34, name: 'ກວາງ', emoji: '🦌', numbers: ['34', '74'] },
+      { id: 35, name: 'ແບ້', emoji: '🐐', numbers: ['35', '75'] },
+      { id: 36, name: 'ເຫງັນ', emoji: '🦝', numbers: ['36', '76'] },
+      { id: 37, name: 'ຫຼິ່ນ', emoji: ' pangolin', numbers: ['37', '77'] },
+      { id: 38, name: 'ເໝັ້ນ', emoji: '🦔', numbers: ['38', '78'] },
+      { id: 39, name: 'ກະປູ', emoji: '🦀', numbers: ['39', '79'] },
+      { id: 40, name: 'ນົກອິນຊີ', emoji: '🦅', numbers: ['40', '80'] },
+    ];
+
+    // =========================================================================
+    // APPLICATION STATE & SESSION OBJECTS
+    // =========================================================================
+    const defaultState = {
+      userProfile: '020 9528 1677',
+      referralCode: 'ID8899',
+      loyaltyPoints: 120,
+      cart: [],
+      bills: [],
+    };
+
+    let state = loadAppState();
+
+    const tamlahSession = {
+      search: '',
+      selectedGroupId: 24,
+      selectedNumbers: ['24', '64'],
+      prefix: '',
+      amount: 5000,
+    };
+
+    const randomSession = {
+      digits: 2,
+      suffix: '',
+      slots: 3,
+      amount: 5000,
+      temNam: false,
+      preview: [],
+    };
+
+    const swapSession = {
+      sourceInput: '124',
+      digits: 3,
+      slots: 3,
+      amount: 5000,
+    };
+
+    const paymentSession = {
+      method: 'ໂອນ',
+      note: '',
+      bill: null,
+      autoDispatch: true,
+      autoChannel: 'whatsapp',
+      lastDispatchReceipt: '',
+      lastDispatchUrl: '',
+      lastDispatchChannelLabel: '',
+    };
+
+    // =========================================================================
+    // STORAGE & UTILITY HELPERS
+    // =========================================================================
+    function loadAppState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...defaultState };
+        const parsed = JSON.parse(raw);
+        return {
+          userProfile: typeof parsed.userProfile === 'string' && parsed.userProfile.trim() ? parsed.userProfile.trim() : defaultState.userProfile,
+          referralCode: typeof parsed.referralCode === 'string' && parsed.referralCode.trim() ? parsed.referralCode.trim() : defaultState.referralCode,
+          loyaltyPoints: Number.isFinite(Number(parsed.loyaltyPoints)) ? Number(parsed.loyaltyPoints) : defaultState.loyaltyPoints,
+          cart: Array.isArray(parsed.cart) ? parsed.cart : [],
+          bills: Array.isArray(parsed.bills) ? parsed.bills : [],
+        };
+      } catch (err) {
+        return { ...defaultState };
+      }
+    }
+
+    function saveAppState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {}
+    }
+
+    function loadManualDrawResult() {
+      try {
+        const raw = localStorage.getItem(MANUAL_RESULT_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function saveManualDrawResult(data) {
+      try {
+        localStorage.setItem(MANUAL_RESULT_KEY, JSON.stringify(data));
+      } catch (err) {}
+    }
+
+    function formatKip(amount) {
+      const n = Math.max(0, Math.round(Number(amount) || 0));
+      return n.toLocaleString('en-US') + ' ກີບ';
+    }
+
+    function sanitizeDigitInput(el, maxLen) {
+      if (!el) return;
+      el.value = el.value.replace(/\D+/g, '').slice(0, maxLen);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    let toastTimeout = null;
+    function showToast(message) {
+      const banner = document.getElementById('toastBanner');
+      const text = document.getElementById('toastText');
+      if (!banner || !text) return;
+      text.textContent = message;
+      banner.classList.remove('opacity-0');
+      banner.classList.add('opacity-100');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        banner.classList.remove('opacity-100');
+        banner.classList.add('opacity-0');
+      }, 2600);
+    }
+
+    // =========================================================================
+    // DISCOUNT CALCULATION
+    // =========================================================================
+    function computeDiscountSummary(subtotal, method = 'ໂອນ') {
+      const cleanSub = Math.max(0, Math.round(Number(subtotal) || 0));
+      const discountRate = method === 'ຕິດຫນີ້' ? 5 : 15;
+      const discountAmount = Math.round((cleanSub * discountRate) / 100);
+      const netTotal = Math.max(0, cleanSub - discountAmount);
+      return {
+        subtotal: cleanSub,
+        discountRate,
+        discountAmount,
+        netTotal,
+      };
+    }
+
+    function recalculateBill(bill) {
+      if (!bill) return bill;
+      const subtotal =
+        typeof bill.subtotal === 'number'
+          ? bill.subtotal
+          : (bill.items || []).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+      const calc = computeDiscountSummary(subtotal, bill.paymentMethod || 'ໂອນ');
+      bill.subtotal = calc.subtotal;
+      bill.discountRate = calc.discountRate;
+      bill.discountAmount = calc.discountAmount;
+      bill.total = calc.netTotal;
+      return bill;
+    }
+
+    // =========================================================================
+    // 40-ANIMAL DREAM CHART & "ເຕັມນາມ" EXPANSION
+    // =========================================================================
+    function findAnimalGroupByLastTwo(lastTwoStr) {
+      const padded = String(lastTwoStr ?? '').padStart(2, '0').slice(-2);
+      return ANIMAL_GROUPS.find((grp) => grp.numbers.includes(padded)) || null;
+    }
+
+    function getAnimalLabelForNumber(numStr) {
+      const clean = String(numStr ?? '').replace(/\D+/g, '');
+      if (clean.length < 2) return '';
+      const group = findAnimalGroupByLastTwo(clean.slice(-2));
+      return group ? `ນາມ ${String(group.id).padStart(2, '0')} • ${group.emoji.trim()} ${group.name}` : '';
+    }
+
+    function expandTemNam(numStr) {
+      const clean = String(numStr ?? '').replace(/\D+/g, '');
+      if (clean.length < 2 || clean.length > 6) return [];
+      const prefix = clean.slice(0, -2);
+      const lastTwo = clean.slice(-2);
+      const group = findAnimalGroupByLastTwo(lastTwo);
+      if (!group) return [clean];
+      return Array.from(new Set(group.numbers.map((tail) => prefix + tail)));
+    }
+
+    // =========================================================================
+    // CART OPERATIONS
+    // =========================================================================
+    function addNumberToCart(rawNumber, rawAmount = 5000) {
+      const num = String(rawNumber ?? '').replace(/\D+/g, '');
+      const amount = Math.max(1000, Math.round(Number(rawAmount) || 5000));
+      if (num.length < 2 || num.length > 6) {
+        return { added: false, reason: 'length' };
+      }
+      if (state.cart.some((item) => item.number === num)) {
+        return { added: false, reason: 'duplicate' };
+      }
+      state.cart.push({ number: num, amount });
+      saveAppState();
+      refreshShellUI();
+      return { added: true };
+    }
+
+    function addBatchToCart(numbersArray, rawAmount = 5000) {
+      const amount = Math.max(1000, Math.round(Number(rawAmount) || 5000));
+      let addedCount = 0;
+      let skippedDupes = 0;
+
+      for (const raw of numbersArray) {
+        const res = addNumberToCart(raw, amount);
+        if (res.added) addedCount++;
+        else if (res.reason === 'duplicate') skippedDupes++;
+      }
+
+      return { addedCount, skippedDupes };
+    }
+
+    function handleQuickAdd(event) {
+      event.preventDefault();
+      const numEl = document.getElementById('quickNumberInput');
+      const amtEl = document.getElementById('quickAmountInput');
+      const num = (numEl.value || '').trim();
+      const amount = Number(amtEl.value) || 5000;
+
+      if (num.length < 2 || num.length > 6) {
+        showToast('ກະລຸນາປ້ອນເລກ 2 ຫາ 6 ໂຕ');
+        numEl.focus();
+        return;
+      }
+
+      const res = addNumberToCart(num, amount);
+      if (res.added) {
+        showToast(`ເພີ່ມເລກ ${num} (${formatKip(amount)}) ລົງກະຕ່າແລ້ວ`);
+        numEl.value = '';
+      } else if (res.reason === 'duplicate') {
+        showToast(`ເລກ ${num} ມີໃນກະຕ່າແລ້ວ (ບໍ່ເພີ່ມຊ້ຳ)`);
+      }
+    }
+
+    function updateCartItemAmount(index, delta) {
+      const item = state.cart[index];
+      if (!item) return;
+      item.amount = Math.max(1000, (Number(item.amount) || 5000) + delta);
+      saveAppState();
+      refreshShellUI();
+      renderCartModal(document.getElementById('modalBody'));
+    }
+
+    function deleteCartItem(index) {
+      if (index < 0 || index >= state.cart.length) return;
+      const removed = state.cart.splice(index, 1)[0];
+      saveAppState();
+      refreshShellUI();
+      showToast(`ລຶບເລກ ${removed.number} ອອກແລ້ວ`);
+      renderCartModal(document.getElementById('modalBody'));
+    }
+
+    function expandCartRowTemNam(index) {
+      const item = state.cart[index];
+      if (!item) return;
+      const expandedList = expandTemNam(item.number);
+      if (expandedList.length <= 1) {
+        showToast('ເລກນີ້ບໍ່ມີຕົວເຕັມນາມເພີ່ມ');
+        return;
+      }
+      const { addedCount } = addBatchToCart(expandedList, item.amount);
+      if (addedCount > 0) {
+        showToast(`ແຕກເຕັມນາມ ${expandedList.join(', ')} (+${addedCount} ໃໝ່)`);
+      } else {
+        showToast('ເລກເຕັມນາມທັງໝົດມີໃນກະຕ່າແລ້ວ');
+      }
+      renderCartModal(document.getElementById('modalBody'));
+    }
+
+    // =========================================================================
+    // SHELL UI, PROFILE & REAL-TIME COUNTDOWN
+    // =========================================================================
+    function refreshShellUI() {
+      document.getElementById('userProfileDisplay').textContent = state.userProfile;
+      document.getElementById('referralCodeText').textContent = state.referralCode;
+      document.getElementById('loyaltyPointsText').textContent = Number(state.loyaltyPoints).toLocaleString('en-US');
+      document.getElementById('headerBillBadge').textContent = String(state.bills.length);
+
+      const count = state.cart.length;
+      const subtotal = state.cart.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+      const qrNet = computeDiscountSummary(subtotal, 'ໂອນ').netTotal;
+      document.getElementById('footerCartBadge').textContent = String(count);
+      document.getElementById('footerCartTotal').textContent =
+        subtotal > 0 ? `ລວມ (ຫຼຸດ 15% QR): ${formatKip(qrNet)}` : 'ລວມ: 0 ກີບ';
+    }
+
+    function saveEditedProfile(event) {
+      event.preventDefault();
+      const input = document.getElementById('profileNamePhoneInput');
+      const val = (input.value || '').trim();
+      if (!val) {
+        showToast('ກະລຸນາປ້ອນຊື່ ຫຼື ເບີໂທ');
+        return;
+      }
+      state.userProfile = val;
+      saveAppState();
+      refreshShellUI();
+      closeModal();
+      showToast('ອັບເດດຂໍ້ມູນຜູ້ໃຊ້ແລ້ວ');
+    }
+
+    function copyTextToClipboard(text) {
+      try {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        temp.setAttribute('readonly', '');
+        temp.style.position = 'fixed';
+        temp.style.opacity = '0';
+        document.body.appendChild(temp);
+        temp.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(temp);
+        return Boolean(ok);
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function copyReferralCode() {
+      const code = state.referralCode;
+      const ok = copyTextToClipboard(code);
+      showToast(ok ? `ຄັດລອກລະຫັດ ${code} ແລ້ວ` : `ລະຫັດແນະນຳ: ${code}`);
+    }
+
+    function updateCountdownClock() {
+      const now = new Date();
+      const drawDateEl = document.getElementById('drawDateDisplay');
+      const timerEl = document.getElementById('countdownTimer');
+      if (!drawDateEl || !timerEl) return;
+
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      drawDateEl.textContent = `ງວດວັນທີ ${dd}/${mm}/${yyyy}`;
+
+      const cutoff = new Date(now);
+      cutoff.setHours(20, 0, 0, 0);
+      if (now >= cutoff) {
+        cutoff.setDate(cutoff.getDate() + 1);
+      }
+
+      const diffMs = Math.max(0, cutoff - now);
+      const totalSec = Math.floor(diffMs / 1000);
+      const hrs = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+      const secs = String(totalSec % 60).padStart(2, '0');
+      timerEl.textContent = `${hrs}:${mins}:${secs}`;
+    }
+
+    // =========================================================================
+    // MODAL ROUTER
+    // =========================================================================
+    function openModal(viewName, payload = null) {
+      const backdrop = document.getElementById('modalBackdrop');
+      const titleEl = document.getElementById('modalTitle');
+      const bodyEl = document.getElementById('modalBody');
+      if (!backdrop || !titleEl || !bodyEl) return;
+
+      bodyEl.scrollTop = 0;
+
+      switch (viewName) {
+        case 'edit_profile':
+          titleEl.textContent = '✏️ ແກ້ໄຂຊື່ / ເບີໂທ';
+          renderEditProfileModal(bodyEl);
+          break;
+        case 'income':
+          titleEl.textContent = '💰 ສ້າງລາຍໄດ້ / ເບິ່ງລາຍລະອຽດ';
+          renderIncomeModal(bodyEl);
+          break;
+        case 'tamlah':
+          titleEl.textContent = '📖 ຕຳລາສັດ 40 ນາມ';
+          renderTamlahModal(bodyEl);
+          break;
+        case 'random':
+          titleEl.textContent = '🎲 ສຸ່ມເລກ (1-6 ໂຕ)';
+          generateRandomPreview();
+          renderRandomModal(bodyEl);
+          break;
+        case 'swap':
+          titleEl.textContent = '🔀 ຊື້ສະຫຼັບເລກ';
+          renderSwapModal(bodyEl);
+          break;
+        case 'cart':
+          titleEl.textContent = '🛒 ຊື້ເລກ / ກະຕ່າສິນຄ້າ';
+          renderCartModal(bodyEl);
+          break;
+        case 'payment':
+          titleEl.textContent = `💳 ຊຳລະເງິນ • ${SHOP_NAME}`;
+          renderPaymentView(bodyEl);
+          break;
+        case 'bills':
+          titleEl.textContent = '🧾 ເບິ່ງບິນ (ປະຫວັດການສັ່ງຊື້)';
+          renderBillsModal(bodyEl);
+          break;
+        case 'results':
+          titleEl.textContent = '🏆 ຜົນຫວຍ & ກວດບິນ';
+          renderResultsModal(bodyEl);
+          break;
+        case 'random_chaotic':
+          titleEl.textContent = '🤑 ເສດຖີສຸ່ມມົ້ວ';
+          renderSpecialToolModal(bodyEl, 'random_chaotic', payload);
+          break;
+        case 'powder_rub':
+          titleEl.textContent = '🪔 ທາແປ້ງຂໍເລກ';
+          renderSpecialToolModal(bodyEl, 'powder_rub', payload);
+          break;
+        case 'guru_picks':
+          titleEl.textContent = '🔮 ເລກເດັດອາຈານດັງ';
+          renderSpecialToolModal(bodyEl, 'guru_picks', payload);
+          break;
+        case 'dream_random':
+          titleEl.textContent = '🌙 ສຸ່ມຕາມຄວາມຝັນ';
+          renderSpecialToolModal(bodyEl, 'dream_random', payload);
+          break;
+        case 'kuman_thong':
+          titleEl.textContent = '🧸 ຂໍເລກນຳກຸມມານທອງ';
+          renderSpecialToolModal(bodyEl, 'kuman_thong', payload);
+          break;
+        case 'lucky_wheel':
+          titleEl.textContent = '🎡 ວົງລໍ້ທັງໂຊກທັງລວຍ';
+          renderSpecialToolModal(bodyEl, 'lucky_wheel', payload);
+          break;
+        default:
+          titleEl.textContent = SHOP_NAME;
+          bodyEl.innerHTML = '';
+      }
+
+      backdrop.classList.remove('hidden');
+      backdrop.classList.add('flex');
+    }
+
+    function closeModal() {
+      const backdrop = document.getElementById('modalBackdrop');
+      if (!backdrop) return;
+      backdrop.classList.add('hidden');
+      backdrop.classList.remove('flex');
+    }
+
+    document.getElementById('modalBackdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'modalBackdrop') {
+        closeModal();
+      }
+    });
+
+    // =========================================================================
+    // PROFILE & INCOME MODALS
+    // =========================================================================
+    function renderEditProfileModal(container) {
+      container.innerHTML = `
+        <form onsubmit="saveEditedProfile(event)" class="space-y-4">
+          <div>
+            <label for="profileNamePhoneInput" class="block text-xs font-bold text-slate-700 mb-1">ຊື່ຜູ້ໃຊ້ ຫຼື ເບີໂທລະສັບ</label>
+            <input
+              id="profileNamePhoneInput"
+              type="text"
+              value="${escapeHtml(state.userProfile)}"
+              class="w-full border border-slate-300 focus:border-[#F25C19] focus:ring-2 focus:ring-[#F25C19]/20 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-900 outline-none"
+              required
+            />
+          </div>
+          <button type="submit" class="w-full bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-sm py-3 rounded-2xl shadow transition">
+            ບັນທຶກຂໍ້ມູນ
+          </button>
+        </form>
+      `;
+    }
+
+    function renderIncomeModal(container) {
+      container.innerHTML = `
+        <div class="space-y-4">
+          <div class="bg-[#FFF3EC] border border-[#FFD4BE] rounded-2xl p-4 space-y-2">
+            <div class="text-sm font-extrabold text-[#F25C19]">ແຜນສ້າງລາຍໄດ້ກັບ ${SHOP_NAME}</div>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              ແບ່ງປັນລະຫັດແນະນຳ <strong class="text-[#F25C19]">${escapeHtml(state.referralCode)}</strong> ໃຫ້ໝູ່ເພື່ອນເພື່ອສະສົມຄະແນນພອຍ ແລະ ຮັບສິດທິພິເສດໃນແຕ່ລະງວດ.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-center">
+            <div class="border border-orange-100 rounded-2xl p-3 bg-orange-50/40">
+              <div class="text-[11px] text-slate-500 font-semibold">ຄະແນນສະສົມປັດຈຸບັນ</div>
+              <div class="text-lg font-extrabold text-[#F25C19] mt-0.5">${Number(state.loyaltyPoints).toLocaleString('en-US')} ພອຍ</div>
+            </div>
+            <div class="border border-orange-100 rounded-2xl p-3 bg-orange-50/40">
+              <div class="text-[11px] text-slate-500 font-semibold">ຈຳນວນບິນທັງໝົດ</div>
+              <div class="text-lg font-extrabold text-slate-900 mt-0.5">${state.bills.length} ບິນ</div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs space-y-1.5 text-slate-700">
+            <div class="font-extrabold text-slate-900">ລາຍລະອຽດສ່ວນຫຼຸດການຊຳລະ:</div>
+            <div>• <strong>ໂອນ (ສະແກນຄິວອາ):</strong> ຫຼຸດ <strong>15%</strong></div>
+            <div>• <strong>ຕິດຫນີ້:</strong> ຫຼຸດ <strong>5%</strong></div>
+            <div>• ສົ່ງອໍເດີໄວຜ່ານ WhatsApp (${WHATSAPP_LOCAL}) ຫຼື Messenger (${MESSENGER_USERNAME})</div>
+          </div>
+
+          <button
+            type="button"
+            onclick="copyReferralCode()"
+            class="w-full bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-sm py-3 rounded-2xl shadow transition"
+          >
+            ຄັດລອກລະຫັດແນະນຳ (${escapeHtml(state.referralCode)})
+          </button>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // MODAL: "ຕຳລາ" (40 ANIMALS)
+    // =========================================================================
+    function renderTamlahModal(container) {
+      const q = (tamlahSession.search || '').trim().toLowerCase();
+      const filtered = ANIMAL_GROUPS.filter((grp) => {
+        if (!q) return true;
+        const idMatch = String(grp.id).includes(q) || String(grp.id).padStart(2, '0').includes(q);
+        const nameMatch = grp.name.toLowerCase().includes(q);
+        const numMatch = grp.numbers.some((n) => n.includes(q));
+        return idMatch || nameMatch || numMatch;
+      });
+
+      const activeGroup = ANIMAL_GROUPS.find((g) => g.id === tamlahSession.selectedGroupId) || ANIMAL_GROUPS[23];
+      const prefixClean = (tamlahSession.prefix || '').replace(/\D+/g, '').slice(0, 4);
+      const previewNumbers = tamlahSession.selectedNumbers.map((n) => prefixClean + n);
+
+      container.innerHTML = `
+        <div class="space-y-3">
+          <div>
+            <input
+              type="text"
+              value="${escapeHtml(tamlahSession.search)}"
+              oninput="onTamlahSearch(this.value)"
+              placeholder="ຄົ້ນຫາຕຳລາ (ຊື່ສັດ ຫຼື ຕົວເລກ ເຊັ່ນ ກົບ, 24, 56)..."
+              class="w-full border border-slate-300 focus:border-[#F25C19] focus:ring-2 focus:ring-[#F25C19]/20 rounded-xl px-3.5 py-2 text-sm font-semibold outline-none"
+            />
+          </div>
+
+          <div class="max-h-56 overflow-y-auto space-y-2 pr-1">
+            ${
+              filtered.length === 0
+                ? `<div class="text-center text-xs text-slate-500 py-6">ບໍ່ພົບລາຍການຕຳລາທີ່ຄົ້ນຫາ</div>`
+                : filtered
+                    .map((grp) => {
+                      const isCurrentGroup = grp.id === tamlahSession.selectedGroupId;
+                      return `
+                        <div class="border ${isCurrentGroup ? 'border-[#F25C19] bg-[#FFF8F4]' : 'border-slate-200 bg-white'} rounded-2xl p-2.5 transition">
+                          <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                              <span class="text-xs font-extrabold bg-orange-100 text-[#F25C19] px-2 py-0.5 rounded-lg shrink-0">
+                                ນາມ ${String(grp.id).padStart(2, '0')}
+                              </span>
+                              <span class="text-lg shrink-0">${grp.emoji.trim()}</span>
+                              <span class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${escapeHtml(grp.name)}</span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onclick="selectTamlahFullGroup(${grp.id})"
+                              class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-[11px] font-extrabold px-2.5 py-1 rounded-xl shrink-0 transition"
+                            >
+                              ເຕັມນາມ
+                            </button>
+                          </div>
+
+                          <div class="mt-2 flex flex-wrap gap-1.5">
+                            ${grp.numbers
+                              .map((numStr) => {
+                                const selected = tamlahSession.selectedNumbers.includes(numStr);
+                                return `
+                                  <button
+                                    type="button"
+                                    onclick="toggleTamlahSingleNumber(${grp.id}, '${numStr}')"
+                                    class="px-3 py-1 rounded-xl text-xs font-extrabold border transition active:scale-95 ${
+                                      selected
+                                        ? 'bg-[#F25C19] text-white border-[#F25C19] shadow-2xs'
+                                        : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-[#F25C19]'
+                                    }"
+                                  >
+                                    ${numStr}
+                                  </button>
+                                `;
+                              })
+                              .join('')}
+                          </div>
+                        </div>
+                      `;
+                    })
+                    .join('')
+            }
+          </div>
+
+          <div class="bg-[#FFF3EC] border border-[#FFD4BE] rounded-2xl p-3 space-y-2.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-700">ກຸ່ມທີ່ເລືອກ: <strong class="text-[#F25C19]">${activeGroup.emoji.trim()} ${escapeHtml(activeGroup.name)}</strong></span>
+              <span class="font-extrabold text-slate-900">${previewNumbers.length} ເລກ</span>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 min-h-[26px]">
+              ${
+                previewNumbers.length
+                  ? previewNumbers
+                      .map((n) => `<span class="bg-white border border-[#FFD4BE] text-[#F25C19] text-xs font-extrabold px-2.5 py-0.5 rounded-lg">${n}</span>`)
+                      .join('')
+                  : `<span class="text-xs text-slate-400">ຍັງບໍ່ໄດ້ເລືອກເລກ</span>`
+              }
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label for="tamlahPrefixInput" class="block text-[11px] font-bold text-slate-700 mb-0.5">ຕື່ມຫຼັກ (ໃສ່ຫຼືບໍ່ໃສ່ກໍໄດ້)</label>
+                <input
+                  id="tamlahPrefixInput"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="4"
+                  value="${escapeHtml(tamlahSession.prefix)}"
+                  oninput="onTamlahPrefixChange(this.value)"
+                  placeholder="ເຊັ່ນ 1 -> 124, 164"
+                  class="w-full bg-white border border-slate-300 focus:border-[#F25C19] rounded-xl px-2.5 py-2 text-xs sm:text-sm font-bold outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="tamlahAmountInput" class="block text-[11px] font-bold text-slate-700 mb-0.5">ຈຳນວນເງິນ (ກີບ)</label>
+                <input
+                  id="tamlahAmountInput"
+                  type="number"
+                  inputmode="numeric"
+                  min="1000"
+                  step="1000"
+                  value="${tamlahSession.amount}"
+                  oninput="tamlahSession.amount = Math.max(1000, Number(this.value) || 5000)"
+                  class="w-full bg-white border border-slate-300 focus:border-[#F25C19] rounded-xl px-2.5 py-2 text-xs sm:text-sm font-extrabold text-right outline-none"
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="confirmTamlahSelection()"
+              class="w-full bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-sm py-2.5 rounded-2xl shadow transition"
+            >
+              ຕົກລົງ
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function onTamlahSearch(val) {
+      tamlahSession.search = val;
+      const body = document.getElementById('modalBody');
+      const scrollTop = body.scrollTop;
+      renderTamlahModal(body);
+      body.scrollTop = scrollTop;
+    }
+
+    function onTamlahPrefixChange(val) {
+      tamlahSession.prefix = val.replace(/\D+/g, '').slice(0, 4);
+      renderTamlahModal(document.getElementById('modalBody'));
+      const input = document.getElementById('tamlahPrefixInput');
+      if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    }
+
+    function toggleTamlahSingleNumber(groupId, numStr) {
+      tamlahSession.selectedGroupId = groupId;
+      const idx = tamlahSession.selectedNumbers.indexOf(numStr);
+      if (idx >= 0) tamlahSession.selectedNumbers.splice(idx, 1);
+      else tamlahSession.selectedNumbers.push(numStr);
+      renderTamlahModal(document.getElementById('modalBody'));
+    }
+
+    function selectTamlahFullGroup(groupId) {
+      const grp = ANIMAL_GROUPS.find((g) => g.id === groupId);
+      if (!grp) return;
+      tamlahSession.selectedGroupId = groupId;
+      tamlahSession.selectedNumbers = [...grp.numbers];
+      renderTamlahModal(document.getElementById('modalBody'));
+      showToast(`ເລືອກເຕັມນາມ ${grp.name} (${grp.numbers.join(', ')})`);
+    }
+
+    function confirmTamlahSelection() {
+      const prefixClean = (tamlahSession.prefix || '').replace(/\D+/g, '');
+      const finalNums = tamlahSession.selectedNumbers
+        .map((n) => prefixClean + n)
+        .filter((n) => n.length >= 2 && n.length <= 6);
+
+      if (finalNums.length === 0) {
+        showToast('ກະລຸນາເລືອກເລກຢ່າງໜ້ອຍ 1 ໂຕ (2-6 ຫຼັກ)');
+        return;
+      }
+
+      const { addedCount, skippedDupes } = addBatchToCart(finalNums, tamlahSession.amount);
+      closeModal();
+      if (addedCount > 0) {
+        showToast(`ເພີ່ມ ${addedCount} ເລກລົງກະຕ່າແລ້ວ${skippedDupes ? ` (ຂ້າມ ${skippedDupes} ເລກຊ້ຳ)` : ''}`);
+      } else {
+        showToast('ເລກທີ່ເລືອກມີໃນກະຕ່າໝົດແລ້ວ');
+      }
+    }
+
+    // =========================================================================
+    // MODAL: "ສຸ່ມເລກ"
+    // =========================================================================
+    function generateRandomPreview() {
+      const digits = randomSession.digits;
+      const suffix = (randomSession.suffix || '').replace(/\D+/g, '').slice(0, digits);
+      const slots = Math.max(1, Math.min(20, Number(randomSession.slots) || 1));
+
+      const rawPick = [];
+      for (let i = 0; i < slots; i++) {
+        let candidate = '';
+        if (suffix.length >= digits) {
+          candidate = suffix.slice(-digits);
+        } else {
+          const randLen = digits - suffix.length;
+          let randPart = '';
+          for (let j = 0; j < randLen; j++) {
+            randPart += String(Math.floor(Math.random() * 10));
+          }
+          candidate = randPart + suffix;
+        }
+        rawPick.push(candidate);
+      }
+
+      if (randomSession.temNam && digits >= 2) {
+        const expandedSet = new Set();
+        rawPick.forEach((n) => {
+          expandTemNam(n).forEach((en) => expandedSet.add(en));
+        });
+        randomSession.preview = Array.from(expandedSet);
+      } else {
+        randomSession.preview = Array.from(new Set(rawPick));
+      }
+    }
+
+    function renderRandomModal(container) {
+      container.innerHTML = `
+        <div class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">ເລືອກຈຳນວນຫຼັກທີ່ຕ້ອງການສຸ່ມ</label>
+            <div class="grid grid-cols-6 gap-1.5">
+              ${[1, 2, 3, 4, 5, 6]
+                .map(
+                  (d) => `
+                  <button
+                    type="button"
+                    onclick="setRandomDigits(${d})"
+                    class="py-2 rounded-xl font-extrabold text-xs sm:text-sm border transition active:scale-95 ${
+                      randomSession.digits === d
+                        ? 'bg-[#F25C19] text-white border-[#F25C19] shadow-2xs'
+                        : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-[#F25C19]'
+                    }"
+                  >
+                    ${d} ໂຕ
+                  </button>
+                `
+                )
+                .join('')}
+            </div>
+          </div>
+
+          <div>
+            <label for="randomSuffixInput" class="block text-xs font-bold text-slate-700 mb-1">ໃສ່ເລກທ້າຍ (ໃສ່ຫຼືບໍ່ໃສ່ກໍໄດ້)</label>
+            <input
+              id="randomSuffixInput"
+              type="text"
+              inputmode="numeric"
+              maxlength="${randomSession.digits}"
+              value="${escapeHtml(randomSession.suffix)}"
+              oninput="onRandomSuffixInput(this.value)"
+              placeholder="ເຊັ່ນ 24 ຫຼື 56"
+              class="w-full border border-slate-300 focus:border-[#F25C19] rounded-xl px-3 py-2 text-sm font-bold outline-none"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="border border-slate-200 rounded-2xl p-2.5 bg-slate-50/60">
+              <div class="text-[11px] font-bold text-slate-600 text-center mb-1.5">ຈຳນວນປ່ອງ</div>
+              <div class="flex items-center justify-between gap-1">
+                <button type="button" onclick="adjustRandomSlots(-1)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">-</button>
+                <span class="font-extrabold text-sm text-slate-900">${randomSession.slots}</span>
+                <button type="button" onclick="adjustRandomSlots(1)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">+</button>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-2.5 bg-slate-50/60">
+              <div class="text-[11px] font-bold text-slate-600 text-center mb-1.5">ຈຳນວນເງິນ</div>
+              <div class="flex items-center justify-between gap-1">
+                <button type="button" onclick="adjustRandomAmount(-1000)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">-</button>
+                <span class="font-extrabold text-xs text-[#F25C19]">${Number(randomSession.amount).toLocaleString('en-US')}</span>
+                <button type="button" onclick="adjustRandomAmount(1000)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between bg-[#FFF3EC] border border-[#FFD4BE] rounded-2xl px-3.5 py-2.5">
+            <div>
+              <div class="text-xs sm:text-sm font-extrabold text-slate-900">ເຕັມນາມ</div>
+              <div class="text-[11px] text-slate-600">ກະຈາຍ 2 ໂຕທ້າຍຕາມຕຳລາສັດທຸກປ່ອງ</div>
+            </div>
+            <button
+              type="button"
+              onclick="toggleRandomTemNam()"
+              class="w-12 h-7 rounded-full transition p-1 flex items-center ${randomSession.temNam ? 'bg-[#F25C19] justify-end' : 'bg-slate-300 justify-start'}"
+              aria-label="ສະວິດເປີດ-ປິດ ເຕັມນາມ"
+            >
+              <span class="w-5 h-5 rounded-full bg-white shadow"></span>
+            </button>
+          </div>
+
+          <div class="border border-slate-200 rounded-2xl p-3 bg-white space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-600">ຕົວຢ່າງເລກທີ່ສຸ່ມໄດ້ (${randomSession.preview.length} ເລກ)</span>
+              <button
+                type="button"
+                onclick="reRollRandomPreview()"
+                class="text-xs font-extrabold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-xl transition active:scale-95"
+              >
+                🔄 ສຸ່ມໃໝ່
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${randomSession.preview
+                .map((n) => `<span class="bg-[#FFF3EC] border border-[#FFD4BE] text-[#F25C19] font-extrabold text-xs px-2.5 py-1 rounded-xl">${n}</span>`)
+                .join('')}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onclick="confirmRandomSelection()"
+            class="w-full bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-sm py-3 rounded-2xl shadow transition"
+          >
+            ຕົກລົງ
+          </button>
+        </div>
+      `;
+    }
+
+    function setRandomDigits(d) {
+      randomSession.digits = d;
+      randomSession.suffix = (randomSession.suffix || '').slice(-d);
+      generateRandomPreview();
+      renderRandomModal(document.getElementById('modalBody'));
+    }
+
+    function onRandomSuffixInput(val) {
+      randomSession.suffix = val.replace(/\D+/g, '').slice(0, randomSession.digits);
+      generateRandomPreview();
+      renderRandomModal(document.getElementById('modalBody'));
+      const el = document.getElementById('randomSuffixInput');
+      if (el) {
+        el.focus();
+        el.setSelectionRange(el.value.length, el.value.length);
+      }
+    }
+
+    function adjustRandomSlots(delta) {
+      randomSession.slots = Math.max(1, Math.min(20, randomSession.slots + delta));
+      generateRandomPreview();
+      renderRandomModal(document.getElementById('modalBody'));
+    }
+
+    function adjustRandomAmount(delta) {
+      randomSession.amount = Math.max(1000, randomSession.amount + delta);
+      renderRandomModal(document.getElementById('modalBody'));
+    }
+
+    function toggleRandomTemNam() {
+      randomSession.temNam = !randomSession.temNam;
+      generateRandomPreview();
+      renderRandomModal(document.getElementById('modalBody'));
+    }
+
+    function reRollRandomPreview() {
+      generateRandomPreview();
+      renderRandomModal(document.getElementById('modalBody'));
+    }
+
+    function confirmRandomSelection() {
+      const validNums = randomSession.preview.filter((n) => n.length >= 2 && n.length <= 6);
+      if (validNums.length === 0) {
+        showToast('ເລກສຸ່ມ 1 ຫຼັກ ບໍ່ສາມາດສົ່ງເຂົ້າກະຕ່າ 2-6 ໂຕໄດ້');
+        return;
+      }
+
+      const { addedCount, skippedDupes } = addBatchToCart(validNums, randomSession.amount);
+      closeModal();
+      if (addedCount > 0) {
+        showToast(`ເພີ່ມເລກສຸ່ມ ${addedCount} ລາຍການລົງກະຕ່າແລ້ວ${skippedDupes ? ` (ຂ້າມ ${skippedDupes} ຊ້ຳ)` : ''}`);
+      } else {
+        showToast('ເລກສຸ່ມມີໃນກະຕ່າໝົດແລ້ວ');
+      }
+    }
+
+    // =========================================================================
+    // MODAL: "ຊື້ສະຫຼັບ"
+    // =========================================================================
+    function generateUniquePermutations(rawStr, targetLen = null) {
+      const digits = String(rawStr ?? '').replace(/\D+/g, '').slice(0, 6);
+      if (!digits) return [];
+      const working = targetLen ? digits.slice(0, targetLen) : digits;
+      if (!working) return [];
+
+      const chars = working.split('').sort();
+      const used = new Array(chars.length).fill(false);
+      const current = [];
+      const results = [];
+
+      function backtrack() {
+        if (current.length === chars.length) {
+          results.push(current.join(''));
+          return;
+        }
+        for (let i = 0; i < chars.length; i++) {
+          if (used[i]) continue;
+          if (i > 0 && chars[i] === chars[i - 1] && !used[i - 1]) continue;
+          used[i] = true;
+          current.push(chars[i]);
+          backtrack();
+          current.pop();
+          used[i] = false;
+        }
+      }
+
+      backtrack();
+      return results;
+    }
+
+    function renderSwapModal(container) {
+      const perms = generateUniquePermutations(swapSession.sourceInput, swapSession.digits);
+      const visiblePerms = perms.slice(0, swapSession.slots);
+
+      container.innerHTML = `
+        <div class="space-y-3.5">
+          <div>
+            <label for="swapSourceInput" class="block text-xs font-bold text-slate-700 mb-1">ສະຫຼັບຈາກເລກ</label>
+            <input
+              id="swapSourceInput"
+              type="text"
+              inputmode="numeric"
+              maxlength="6"
+              value="${escapeHtml(swapSession.sourceInput)}"
+              oninput="onSwapSourceChange(this.value)"
+              placeholder="ເຊັ່ນ 124 ຫຼື 2468"
+              class="w-full border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 rounded-xl px-3.5 py-2 text-sm font-extrabold tracking-wider outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">ເລືອກຈຳນວນຫຼັກ</label>
+            <div class="grid grid-cols-6 gap-1.5">
+              ${[1, 2, 3, 4, 5, 6]
+                .map(
+                  (d) => `
+                  <button
+                    type="button"
+                    onclick="setSwapDigits(${d})"
+                    class="py-2 rounded-xl font-extrabold text-xs sm:text-sm border transition active:scale-95 ${
+                      swapSession.digits === d
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                        : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-blue-500'
+                    }"
+                  >
+                    ${d} ໂຕ
+                  </button>
+                `
+                )
+                .join('')}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="border border-slate-200 rounded-2xl p-2.5 bg-slate-50/60">
+              <div class="text-[11px] font-bold text-slate-600 text-center mb-1.5">ຈຳນວນປ່ອງ</div>
+              <div class="flex items-center justify-between gap-1">
+                <button type="button" onclick="adjustSwapSlots(-1)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">-</button>
+                <span class="font-extrabold text-sm text-slate-900">${swapSession.slots}</span>
+                <button type="button" onclick="adjustSwapSlots(1)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">+</button>
+              </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-2.5 bg-slate-50/60">
+              <div class="text-[11px] font-bold text-slate-600 text-center mb-1.5">ຈຳນວນເງິນ</div>
+              <div class="flex items-center justify-between gap-1">
+                <button type="button" onclick="adjustSwapAmount(-1000)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">-</button>
+                <span class="font-extrabold text-xs text-blue-700">${Number(swapSession.amount).toLocaleString('en-US')}</span>
+                <button type="button" onclick="adjustSwapAmount(1000)" class="w-8 h-8 rounded-xl bg-white border border-slate-300 font-extrabold text-slate-800 active:scale-90">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-blue-100 bg-blue-50/50 rounded-2xl p-3 space-y-2">
+            <div class="text-xs font-bold text-blue-900">
+              ເລກສະຫຼັບທີ່ສ້າງໄດ້ (${visiblePerms.length} / ${perms.length} ແບບບໍ່ຊ້ຳ)
+            </div>
+            <div class="flex flex-wrap gap-1.5 min-h-[32px]">
+              ${
+                visiblePerms.length
+                  ? visiblePerms
+                      .map((p) => `<span class="bg-white border border-blue-200 text-blue-900 font-extrabold text-xs px-2.5 py-1 rounded-xl">${p}</span>`)
+                      .join('')
+                  : `<span class="text-xs text-slate-400">ປ້ອນຕົວເລກເພື່ອສ້າງເລກສະຫຼັບ</span>`
+              }
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onclick="confirmSwapSelection()"
+            class="w-full bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-sm py-3 rounded-2xl shadow transition"
+          >
+            ຕົກລົງ
+          </button>
+        </div>
+      `;
+    }
+
+    function onSwapSourceChange(val) {
+      swapSession.sourceInput = val.replace(/\D+/g, '').slice(0, 6);
+      renderSwapModal(document.getElementById('modalBody'));
+      const el = document.getElementById('swapSourceInput');
+      if (el) {
+        el.focus();
+        el.setSelectionRange(el.value.length, el.value.length);
+      }
+    }
+
+    function setSwapDigits(d) {
+      swapSession.digits = d;
+      renderSwapModal(document.getElementById('modalBody'));
+    }
+
+    function adjustSwapSlots(delta) {
+      swapSession.slots = Math.max(1, Math.min(30, swapSession.slots + delta));
+      renderSwapModal(document.getElementById('modalBody'));
+    }
+
+    function adjustSwapAmount(delta) {
+      swapSession.amount = Math.max(1000, swapSession.amount + delta);
+      renderSwapModal(document.getElementById('modalBody'));
+    }
+
+    function confirmSwapSelection() {
+      const perms = generateUniquePermutations(swapSession.sourceInput, swapSession.digits)
+        .slice(0, swapSession.slots)
+        .filter((n) => n.length >= 2 && n.length <= 6);
+
+      if (perms.length === 0) {
+        showToast('ກະລຸນາປ້ອນເລກຢ່າງໜ້ອຍ 2 ຫຼັກເພື່ອສ້າງເລກສະຫຼັບ 2-6 ໂຕ');
+        return;
+      }
+
+      const { addedCount, skippedDupes } = addBatchToCart(perms, swapSession.amount);
+      closeModal();
+      if (addedCount > 0) {
+        showToast(`ເພີ່ມເລກສະຫຼັບ ${addedCount} ໂຕລົງກະຕ່າແລ້ວ${skippedDupes ? ` (ຂ້າມ ${skippedDupes} ຊ້ຳ)` : ''}`);
+      } else {
+        showToast('ເລກສະຫຼັບທັງໝົດມີໃນກະຕ່າແລ້ວ');
+      }
+    }
+
+    // =========================================================================
+    // CART, PAYMENT & ORDER DISPATCH
+    // =========================================================================
+    function renderCartModal(container) {
+      if (state.cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 space-y-3">
+            <div class="text-4xl">🛒</div>
+            <div class="text-sm font-bold text-slate-600">ຍັງບໍ່ມີເລກໃນກະຕ່າ</div>
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="bg-[#F25C19] text-white font-extrabold text-xs px-5 py-2.5 rounded-2xl shadow active:scale-95 transition"
+            >
+              ກັບໄປເລືອກເລກ
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const subtotal = state.cart.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+      const qrCalc = computeDiscountSummary(subtotal, 'ໂອນ');
+      const creditCalc = computeDiscountSummary(subtotal, 'ຕິດຫນີ້');
+
+      const rowsHtml = state.cart
+        .map((item, idx) => {
+          const animalText = getAnimalLabelForNumber(item.number);
+          return `
+            <div class="border border-slate-200 rounded-2xl p-3 bg-white shadow-2xs space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="text-base font-extrabold text-[#F25C19] tracking-wider">${escapeHtml(item.number)}</span>
+                    <span class="text-[11px] font-bold text-slate-500">${item.number.length} ໂຕ</span>
+                  </div>
+                  ${animalText ? `<div class="text-xs font-semibold text-slate-600 truncate mt-0.5">${escapeHtml(animalText)}</div>` : ''}
+                </div>
+
+                <button
+                  type="button"
+                  onclick="deleteCartItem(${idx})"
+                  class="w-7 h-7 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold text-xs flex items-center justify-center active:scale-90 transition shrink-0"
+                  title="ລຶບລາຍການ"
+                >
+                  X
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                <button
+                  type="button"
+                  onclick="expandCartRowTemNam(${idx})"
+                  class="bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-200 font-extrabold text-xs px-2.5 py-1.5 rounded-xl transition"
+                >
+                  ເຕັມນາມ
+                </button>
+
+                <div class="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onclick="updateCartItemAmount(${idx}, -1000)"
+                    class="w-7 h-7 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 font-extrabold text-slate-800 text-sm flex items-center justify-center"
+                  >-</button>
+                  <span class="min-w-[78px] text-center text-xs sm:text-sm font-extrabold text-slate-900">
+                    ${formatKip(item.amount)}
+                  </span>
+                  <button
+                    type="button"
+                    onclick="updateCartItemAmount(${idx}, 1000)"
+                    class="w-7 h-7 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-90 font-extrabold text-slate-800 text-sm flex items-center justify-center"
+                  >+</button>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      container.innerHTML = `
+        <div class="space-y-3">
+          <div class="space-y-2 max-h-60 overflow-y-auto pr-0.5">
+            ${rowsHtml}
+          </div>
+
+          <div class="bg-[#FFF3EC] border border-[#FFD4BE] rounded-2xl p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between text-xs text-slate-600 font-semibold">
+              <span>${state.cart.length} ລາຍການ • ຍອດກ່ອນຫຼຸດ</span>
+              <span class="font-bold text-slate-800">${formatKip(subtotal)}</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div class="bg-white/95 border border-orange-200 rounded-xl p-2">
+                <div class="font-extrabold text-[#F25C19]">ໂອນ (ຫຼຸດ 15% QR)</div>
+                <div class="font-extrabold text-slate-900 mt-0.5">${formatKip(qrCalc.netTotal)}</div>
+                <div class="text-[10px] text-emerald-700 font-bold">ຫຼຸດ ${formatKip(qrCalc.discountAmount)}</div>
+              </div>
+              <div class="bg-white/95 border border-amber-200 rounded-xl p-2">
+                <div class="font-extrabold text-amber-700">ຕິດຫນີ້ (ຫຼຸດ 5%)</div>
+                <div class="font-extrabold text-slate-900 mt-0.5">${formatKip(creditCalc.netTotal)}</div>
+                <div class="text-[10px] text-amber-800 font-bold">ຫຼຸດ ${formatKip(creditCalc.discountAmount)}</div>
+              </div>
+            </div>
+
+            <div class="pt-1 border-t border-orange-200/80 flex items-center justify-between gap-2">
+              <div class="text-sm font-extrabold text-[#F25C19]">ລວມ: ${formatKip(qrCalc.netTotal)}</div>
+              <button
+                type="button"
+                onclick="checkoutCartAndOpenPayment()"
+                class="bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-sm px-6 py-2.5 rounded-2xl shadow-md transition"
+              >
+                ຊຳລະ
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
+            <div class="text-[11px] font-extrabold text-slate-700 text-center">ສ້າງບິນ & ສົ່ງອໍເດີທັນທີຫາຮ້ານ ${SHOP_NAME}</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onclick="checkoutAndDispatch('whatsapp')"
+                class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs py-2.5 px-2.5 rounded-xl shadow-xs transition flex flex-col items-center justify-center leading-tight"
+              >
+                <span>💬 ສົ່ງ WhatsApp</span>
+                <span class="text-[10px] font-semibold text-emerald-100 mt-0.5">${WHATSAPP_LOCAL}</span>
+              </button>
+              <button
+                type="button"
+                onclick="checkoutAndDispatch('messenger')"
+                class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs py-2.5 px-2.5 rounded-xl shadow-xs transition flex flex-col items-center justify-center leading-tight"
+              >
+                <span>📨 ສົ່ງ Messenger</span>
+                <span class="text-[10px] font-semibold text-blue-100 mt-0.5">ເຟສ ${MESSENGER_USERNAME}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildDraftBillFromCart(method = paymentSession.method) {
+      const subtotal = state.cart.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+      const calc = computeDiscountSummary(subtotal, method);
+      const now = new Date();
+      const billNo =
+        'ID-' +
+        now.getFullYear().toString().slice(-2) +
+        String(now.getMonth() + 1).padStart(2, '0') +
+        String(now.getDate()).padStart(2, '0') +
+        '-' +
+        String(Math.floor(1000 + Math.random() * 9000));
+
+      const timestamp = now.toLocaleString('lo-LA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      return {
+        id: billNo,
+        shopName: SHOP_NAME,
+        createdAt: timestamp,
+        userProfile: state.userProfile,
+        paymentMethod: method,
+        customerNote: paymentSession.note || '',
+        items: state.cart.map((x) => ({ number: x.number, amount: x.amount })),
+        subtotal: calc.subtotal,
+        discountRate: calc.discountRate,
+        discountAmount: calc.discountAmount,
+        total: calc.netTotal,
+      };
+    }
+
+    function finalizeCartIntoBill() {
+      if (state.cart.length === 0) return null;
+      const createdBill = buildDraftBillFromCart(paymentSession.method);
+      state.bills.unshift(createdBill);
+      state.loyaltyPoints += Math.max(10, Math.floor(createdBill.total / 1000));
+      state.cart = [];
+      paymentSession.bill = createdBill;
+      saveAppState();
+      refreshShellUI();
+      return createdBill;
+    }
+
+    function checkoutCartAndOpenPayment() {
+      if (state.cart.length === 0) {
+        showToast('ກະຕ່າວ່າງເປົ່າ');
+        return;
+      }
+      const createdBill = finalizeCartIntoBill();
+      if (!createdBill) return;
+
+      document.getElementById('modalTitle').textContent = `💳 ຊຳລະເງິນ • ${SHOP_NAME}`;
+      renderPaymentView(document.getElementById('modalBody'));
+      showToast(`ສ້າງບິນ ${createdBill.id} ສຳເລັດແລ້ວ`);
+    }
+
+    function checkoutAndDispatch(channel) {
+      if (state.cart.length === 0) {
+        showToast('ກະຕ່າວ່າງເປົ່າ');
+        return;
+      }
+      const createdBill = finalizeCartIntoBill();
+      if (!createdBill) return;
+
+      document.getElementById('modalTitle').textContent = `💳 ຊຳລະເງິນ • ${SHOP_NAME}`;
+      renderPaymentView(document.getElementById('modalBody'));
+
+      if (channel === 'messenger') {
+        sendOrderViaMessenger(createdBill.id);
+      } else {
+        sendOrderViaWhatsApp(createdBill.id);
+      }
+    }
+
+    function setPaymentMethod(method) {
+      paymentSession.method = method;
+      if (paymentSession.bill) {
+        paymentSession.bill.paymentMethod = method;
+        recalculateBill(paymentSession.bill);
+        const found = state.bills.find((b) => b.id === paymentSession.bill.id);
+        if (found) {
+          found.paymentMethod = method;
+          recalculateBill(found);
+        }
+        saveAppState();
+        refreshShellUI();
+      }
+      renderPaymentView(document.getElementById('modalBody'));
+    }
+
+    function setPaymentNote(val) {
+      paymentSession.note = val;
+      if (paymentSession.bill) {
+        paymentSession.bill.customerNote = val;
+        const found = state.bills.find((b) => b.id === paymentSession.bill.id);
+        if (found) found.customerNote = val;
+        saveAppState();
+      }
+    }
+
+    function setAutoDispatchEnabled(enabled) {
+      paymentSession.autoDispatch = Boolean(enabled);
+      renderPaymentView(document.getElementById('modalBody'));
+    }
+
+    function setAutoDispatchChannel(channel) {
+      paymentSession.autoChannel = channel === 'messenger' ? 'messenger' : 'whatsapp';
+      renderPaymentView(document.getElementById('modalBody'));
+    }
+
+    function renderKhamsingQrCard(bill) {
+      return `
+        <div class="mx-auto max-w-[280px] bg-white border-2 border-[#FFD4BE] rounded-3xl p-3 shadow-sm text-center space-y-2">
+          <div class="flex items-center justify-between gap-2 px-1">
+            <div class="text-left leading-tight">
+              <div class="text-[11px] font-extrabold text-[#1E3A8A]">ໂອນເງິນຂ້າມທະນາຄານຜ່ານ LAPNet</div>
+              <div class="text-xs font-extrabold text-[#1E3A8A]">LAO QR</div>
+            </div>
+            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full shrink-0">
+              ຫຼຸດ 15% QR
+            </span>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-2 flex items-center justify-center">
+            <img
+              src="${QR_IMAGE_URL}"
+              alt="QR ຊຳລະເງິນ ${QR_ACCOUNT_HOLDER}"
+              onerror="this.onerror=null;this.src='${QR_FALLBACK_URL}';"
+              class="w-full max-w-[236px] h-auto max-h-64 object-contain rounded-xl mx-auto"
+            />
+          </div>
+
+          <div class="pt-0.5 space-y-0.5">
+            <div class="text-xs font-extrabold text-slate-900 tracking-wide">${QR_ACCOUNT_HOLDER}</div>
+            <div class="text-[11px] font-bold text-[#F25C19]">
+              ${SHOP_NAME} • ຍອດຈ່າຍ: ${formatKip(bill.total)}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function formatOrderReceipt(bill) {
+      recalculateBill(bill);
+      const discountLine =
+        bill.paymentMethod === 'ຕິດຫນີ້'
+          ? `ສ່ວນຫຼຸດ 5% ເມື່ອຕິດຫນີ້: -${formatKip(bill.discountAmount)}`
+          : `ສ່ວນຫຼຸດ 15% ສະແກນຄິວອາ: -${formatKip(bill.discountAmount)}`;
+      const lines = [
+        `🏪 ${SHOP_NAME}`,
+        `💳 ຜູ້ຮັບ: ${QR_ACCOUNT_HOLDER} (LAPNet / LAO QR)`,
+        `🧾 ເລກບິນ: ${bill.id}`,
+        `👤 ຜູ້ສັ່ງ: ${bill.userProfile}`,
+        `📅 ເວລາ: ${bill.createdAt}`,
+        `💰 ຮູບແບບ: ${bill.paymentMethod}${bill.customerNote ? ` (${bill.customerNote})` : ''}`,
+        `----------------------`,
+        ...bill.items.map((it) => {
+          const animal = getAnimalLabelForNumber(it.number);
+          return `• ເລກ ${it.number}${animal ? ` [${animal}]` : ''} : ${formatKip(it.amount)}`;
+        }),
+        `----------------------`,
+        `ຍອດກ່ອນຫຼຸດ: ${formatKip(bill.subtotal)}`,
+        `${discountLine}`,
+        `💵 ຍອດຊຳລະສຸດທິ: ${formatKip(bill.total)}`,
+      ];
+      return lines.join('\n');
+    }
+
+    function buildDispatchUrl(baseUrl, message) {
+      const encoded = encodeURIComponent(message);
+      const sep = baseUrl.includes('?') ? '&' : '?';
+      return `${baseUrl}${sep}text=${encoded}`;
+    }
+
+    function openExternalDispatchLink(url, receipt, channelLabel) {
+      paymentSession.lastDispatchReceipt = receipt;
+      paymentSession.lastDispatchUrl = url;
+      paymentSession.lastDispatchChannelLabel = channelLabel;
+
+      const copied = copyTextToClipboard(receipt);
+      let opened = false;
+
+      try {
+        const win = window.open(url, '_blank', 'noopener,noreferrer');
+        if (win && !win.closed) {
+          opened = true;
+        }
+      } catch (err) {
+        opened = false;
+      }
+
+      if (!opened) {
+        try {
+          const a = document.createElement('a');
+          a.href = url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          opened = true;
+        } catch (err) {
+          opened = false;
+        }
+      }
+
+      if (document.getElementById('modalBody')) {
+        renderPaymentView(document.getElementById('modalBody'));
+      }
+
+      if (copied && opened) {
+        showToast(`ຄັດລອກອໍເດີແລ້ວ • ເປີດ ${channelLabel}`);
+      } else if (copied) {
+        showToast(`ຄັດລອກອໍເດີແລ້ວ • ກົດລິ້ງ ${channelLabel} ດ້ານລຸ່ມເພື່ອເປີດ`);
+      } else {
+        showToast(`ກຽມຂໍ້ມູນສົ່ງ ${channelLabel} ແລ້ວ`);
+      }
+    }
+
+    function copyLastDispatchReceipt() {
+      const text = paymentSession.lastDispatchReceipt || (paymentSession.bill ? formatOrderReceipt(paymentSession.bill) : '');
+      if (!text) {
+        showToast('ບໍ່ມີຂໍ້ຄວາມອໍເດີໃຫ້ຄັດລອກ');
+        return;
+      }
+      const ok = copyTextToClipboard(text);
+      showToast(ok ? 'ຄັດລອກຂໍ້ຄວາມອໍເດີແລ້ວ' : 'ກະລຸນາເລືອກຂໍ້ຄວາມດ້ານລຸ່ມເພື່ອຄັດລອກ');
+    }
+
+    function sendOrderViaWhatsApp(billId) {
+      const bill =
+        (paymentSession.bill && paymentSession.bill.id === billId && paymentSession.bill) ||
+        state.bills.find((b) => b.id === billId);
+      if (!bill) {
+        showToast('ບໍ່ພົບຂໍ້ມູນບິນ');
+        return;
+      }
+      const receipt = formatOrderReceipt(bill);
+      const url = buildDispatchUrl(WHATSAPP_ORDER_URL, receipt);
+      openExternalDispatchLink(url, receipt, `WhatsApp (${WHATSAPP_LOCAL})`);
+    }
+
+    function sendOrderViaMessenger(billId) {
+      const bill =
+        (paymentSession.bill && paymentSession.bill.id === billId && paymentSession.bill) ||
+        state.bills.find((b) => b.id === billId);
+      if (!bill) {
+        showToast('ບໍ່ພົບຂໍ້ມູນບິນ');
+        return;
+      }
+      const receipt = formatOrderReceipt(bill);
+      const url = buildDispatchUrl(MESSENGER_ORDER_URL, receipt);
+      openExternalDispatchLink(url, receipt, `Messenger (${MESSENGER_USERNAME})`);
+    }
+
+    function confirmOrderWithAutoDispatch(billId) {
+      const bill =
+        (paymentSession.bill && paymentSession.bill.id === billId && paymentSession.bill) ||
+        state.bills.find((b) => b.id === billId);
+      if (!bill) {
+        showToast('ບໍ່ພົບຂໍ້ມູນບິນ');
+        return;
+      }
+      recalculateBill(bill);
+      const found = state.bills.find((b) => b.id === bill.id);
+      if (found) {
+        found.paymentMethod = bill.paymentMethod;
+        found.customerNote = bill.customerNote;
+        recalculateBill(found);
+      }
+      saveAppState();
+      refreshShellUI();
+
+      if (paymentSession.autoDispatch) {
+        if (paymentSession.autoChannel === 'messenger') {
+          sendOrderViaMessenger(bill.id);
+        } else {
+          sendOrderViaWhatsApp(bill.id);
+        }
+      } else {
+        const receipt = formatOrderReceipt(bill);
+        paymentSession.lastDispatchReceipt = receipt;
+        const copied = copyTextToClipboard(receipt);
+        renderPaymentView(document.getElementById('modalBody'));
+        showToast(copied ? 'ຢືນຢັນບິນ ແລະ ຄັດລອກຂໍ້ມູນອໍເດີແລ້ວ' : 'ຢືນຢັນບິນສຳເລັດແລ້ວ');
+      }
+    }
+
+    function renderPaymentView(container) {
+      const bill = paymentSession.bill || buildDraftBillFromCart(paymentSession.method);
+      recalculateBill(bill);
+      const currentReceipt = paymentSession.lastDispatchReceipt || formatOrderReceipt(bill);
+      const waHref = buildDispatchUrl(WHATSAPP_ORDER_URL, formatOrderReceipt(bill));
+      const msgHref = buildDispatchUrl(MESSENGER_ORDER_URL, formatOrderReceipt(bill));
+
+      const isTransfer = paymentSession.method === 'ໂອນ';
+      const discountLabel = isTransfer
+        ? 'ສ່ວນຫຼຸດ 15% ສະແກນຄິວອາ'
+        : 'ສ່ວນຫຼຸດ 5% ເມື່ອຕິດຫນີ້';
+
+      container.innerHTML = `
+        <div class="space-y-4">
+          <div class="bg-[#FFF3EC] border border-[#FFD4BE] rounded-2xl p-3.5 space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="text-xs font-extrabold text-[#F25C19]">🏪 ${SHOP_NAME}</div>
+                <div class="text-xs font-bold text-slate-700 mt-0.5">ບິນ: <span class="font-extrabold">${escapeHtml(bill.id)}</span></div>
+                <div class="text-[11px] text-slate-500">${escapeHtml(bill.createdAt)}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[11px] text-slate-500">ຍອດຊຳລະສຸດທິ</div>
+                <div class="text-base font-extrabold text-[#F25C19]">${formatKip(bill.total)}</div>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-orange-200/80 text-xs space-y-1">
+              <div class="flex justify-between text-slate-600">
+                <span>ຍອດກ່ອນຫຼຸດ:</span>
+                <span class="font-bold text-slate-800">${formatKip(bill.subtotal)}</span>
+              </div>
+              <div class="flex justify-between text-emerald-700 font-bold">
+                <span>${discountLabel}:</span>
+                <span>-${formatKip(bill.discountAmount)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">ເລືອກຮູບແບບການຊຳລະ</label>
+            <div class="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onclick="setPaymentMethod('ໂອນ')"
+                class="py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm border-2 transition active:scale-95 flex flex-col items-center justify-center leading-tight gap-0.5 ${
+                  isTransfer
+                    ? 'bg-[#F25C19] text-white border-[#F25C19] shadow'
+                    : 'bg-white text-slate-700 border-slate-300 hover:border-[#F25C19]'
+                }"
+              >
+                <span>🏦 ໂອນ</span>
+                <span class="text-[10px] font-bold ${isTransfer ? 'text-orange-100' : 'text-emerald-700'}">ສ່ວນຫຼຸດ 15% ສະແກນຄິວອາ</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="setPaymentMethod('ຕິດຫນີ້')"
+                class="py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm border-2 transition active:scale-95 flex flex-col items-center justify-center leading-tight gap-0.5 ${
+                  !isTransfer
+                    ? 'bg-amber-500 text-white border-amber-500 shadow'
+                    : 'bg-white text-slate-700 border-slate-300 hover:border-amber-500'
+                }"
+              >
+                <span>📒 ຕິດຫນີ້</span>
+                <span class="text-[10px] font-bold ${!isTransfer ? 'text-amber-100' : 'text-amber-700'}">ສ່ວນຫຼຸດ 5% ເມື່ອຕິດຫນີ້</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="paymentNoteInput" class="block text-xs font-bold text-slate-700 mb-1">ຊື່ / ໝາຍເຫດເພີ່ມເຕີມ (ຖ້າມີ)</label>
+            <input
+              id="paymentNoteInput"
+              type="text"
+              value="${escapeHtml(paymentSession.note)}"
+              oninput="setPaymentNote(this.value)"
+              placeholder="ເຊັ່ນ ຊື່ລູກຄ້າ ຫຼື ມື້ຈ່າຍ..."
+              class="w-full border border-slate-300 focus:border-[#F25C19] rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold outline-none"
+            />
+          </div>
+
+          <div class="bg-orange-50/70 border border-[#FFD4BE] rounded-2xl p-3 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <div class="text-xs font-extrabold text-slate-900">⚡ ສົ່ງອໍເດີອັດຕະໂນມັດ</div>
+                <div class="text-[11px] text-slate-600">ຄັດລອກບິນ ແລະ ເປີດແຊັດສົ່ງອໍເດີທັນທີ</div>
+              </div>
+              <button
+                type="button"
+                onclick="setAutoDispatchEnabled(!paymentSession.autoDispatch)"
+                class="w-12 h-7 rounded-full transition p-1 flex items-center shrink-0 ${paymentSession.autoDispatch ? 'bg-[#F25C19] justify-end' : 'bg-slate-300 justify-start'}"
+                aria-label="ສະວິດສົ່ງອໍເດີອັດຕະໂນມັດ"
+              >
+                <span class="w-5 h-5 rounded-full bg-white shadow"></span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onclick="setAutoDispatchChannel('whatsapp')"
+                class="py-1.5 px-2.5 rounded-xl text-xs font-extrabold border transition ${
+                  paymentSession.autoChannel === 'whatsapp'
+                    ? 'bg-emerald-600 text-white border-emerald-600'
+                    : 'bg-white text-slate-700 border-slate-300'
+                }"
+              >
+                ຊ່ອງທາງ: WhatsApp
+              </button>
+              <button
+                type="button"
+                onclick="setAutoDispatchChannel('messenger')"
+                class="py-1.5 px-2.5 rounded-xl text-xs font-extrabold border transition ${
+                  paymentSession.autoChannel === 'messenger'
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-slate-700 border-slate-300'
+                }"
+              >
+                ຊ່ອງທາງ: Messenger
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onclick="confirmOrderWithAutoDispatch('${bill.id}')"
+              class="w-full bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-xs sm:text-sm py-2.5 rounded-xl shadow transition"
+            >
+              🚀 ຢືນຢັນ & ສົ່ງອໍເດີແບບອັດຕະໂນມັດ (${paymentSession.autoChannel === 'messenger' ? 'Messenger' : 'WhatsApp'})
+            </button>
+          </div>
+
+          ${
+            isTransfer
+              ? `
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
+              <div class="text-xs font-extrabold text-slate-800 text-center">QR ຊຳລະເງິນ (ຫຼຸດ 15% ສະແກນຄິວອາ) • ${QR_ACCOUNT_HOLDER}</div>
+              ${renderKhamsingQrCard(bill)}
+              <div class="text-[11px] text-slate-500 text-center">ສະແກນຈ່າຍຜ່ານແອັບທະນາຄານ ແລ້ວກົດສົ່ງອໍເດີ</div>
+            </div>
+          `
+              : `
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-center space-y-1">
+              <div class="text-sm font-extrabold text-amber-900">ບັນທຶກບິນແບບ "ຕິດຫນີ້" (ຫຼຸດ 5% ເມື່ອຕິດຫນີ້)</div>
+              <p class="text-xs text-amber-800">${SHOP_NAME} • ກ່ອນຫຼຸດ ${formatKip(bill.subtotal)} • ຫຼຸດ ${formatKip(bill.discountAmount)} • ສຸດທິ ${formatKip(bill.total)}</p>
+            </div>
+          `
+          }
+
+          <div class="space-y-2 pt-1">
+            <div class="text-xs font-extrabold text-slate-700 text-center">ສົ່ງອໍເດີຫາຮ້ານ ${SHOP_NAME}</div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onclick="sendOrderViaWhatsApp('${bill.id}')"
+                class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm py-3 px-3 rounded-2xl shadow transition flex flex-col items-center justify-center leading-tight"
+              >
+                <span>💬 WhatsApp</span>
+                <span class="text-[10px] font-semibold text-emerald-100 mt-0.5">${WHATSAPP_LOCAL}</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="sendOrderViaMessenger('${bill.id}')"
+                class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm py-3 px-3 rounded-2xl shadow transition flex flex-col items-center justify-center leading-tight"
+              >
+                <span>📨 Messenger</span>
+                <span class="text-[10px] font-semibold text-blue-100 mt-0.5">ເຟສ ${MESSENGER_USERNAME}</span>
+              </button>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 space-y-2 text-xs">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-slate-700">ລິ້ງເປີດໂດຍກົງ / ຂໍ້ຄວາມອໍເດີ:</span>
+                <button
+                  type="button"
+                  onclick="copyLastDispatchReceipt()"
+                  class="bg-white hover:bg-orange-50 text-[#F25C19] border border-[#FFD4BE] font-extrabold text-[11px] px-2.5 py-1 rounded-lg active:scale-95 transition"
+                >
+                  📋 ຄັດລອກອໍເດີ
+                </button>
+              </div>
+              <div class="flex items-center justify-between gap-2 text-[11px] font-bold">
+                <a href="${waHref}" target="_blank" rel="noopener noreferrer" class="text-emerald-700 underline truncate">
+                  ເປີດ WhatsApp (${WHATSAPP_LOCAL})
+                </a>
+                <a href="${msgHref}" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline truncate">
+                  ເປີດ Messenger (${MESSENGER_USERNAME})
+                </a>
+              </div>
+              <textarea
+                rows="4"
+                readonly
+                class="w-full bg-white border border-slate-200 rounded-xl p-2 text-[11px] font-mono text-slate-700 outline-none"
+              >${escapeHtml(currentReceipt)}</textarea>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // MODAL: "ເບິ່ງບິນ"
+    // =========================================================================
+    function renderBillsModal(container) {
+      if (state.bills.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 space-y-2">
+            <div class="text-4xl">🧾</div>
+            <div class="text-sm font-bold text-slate-600">ຍັງບໍ່ມີປະຫວັດບິນສັ່ງຊື້</div>
+            <p class="text-xs text-slate-400">ເມື່ອກົດ "ຊຳລະ" ໃນກະຕ່າ ບິນຈະຖືກບັນທຶກໄວ້ທີ່ນີ້</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="space-y-3">
+          ${state.bills
+            .map((bill) => {
+              recalculateBill(bill);
+              const isCredit = bill.paymentMethod === 'ຕິດຫນີ້';
+              const badgeStyle = isCredit
+                ? 'bg-amber-100 text-amber-800 border-amber-300'
+                : 'bg-emerald-100 text-emerald-800 border-emerald-300';
+
+              const itemsChips = (bill.items || [])
+                .map(
+                  (it) =>
+                    `<span class="inline-block bg-[#FFF3EC] border border-[#FFD4BE] text-slate-900 text-xs font-bold px-2 py-0.5 rounded-lg mr-1 mb-1">${escapeHtml(it.number)} (${Number(it.amount).toLocaleString('en-US')})</span>`
+                )
+                .join('');
+
+              return `
+                <div class="border border-slate-200 rounded-2xl p-3.5 bg-white shadow-2xs space-y-2.5">
+                  <div class="flex items-start justify-between gap-2">
+                    <div>
+                      <div class="text-[11px] font-extrabold text-[#F25C19]">${SHOP_NAME}</div>
+                      <div class="text-sm font-extrabold text-slate-900">${escapeHtml(bill.id)}</div>
+                      <div class="text-[11px] text-slate-500">${escapeHtml(bill.createdAt)}</div>
+                      ${bill.customerNote ? `<div class="text-[11px] font-semibold text-slate-600 mt-0.5">ໝາຍເຫດ: ${escapeHtml(bill.customerNote)}</div>` : ''}
+                    </div>
+                    <span class="text-xs font-extrabold px-2.5 py-1 rounded-full border ${badgeStyle}">
+                      ${escapeHtml(bill.paymentMethod || 'ໂອນ')} (${isCredit ? '-5%' : '-15%'})
+                    </span>
+                  </div>
+
+                  <div>${itemsChips}</div>
+
+                  <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div>
+                      <div class="text-[11px] text-slate-500">ກ່ອນຫຼຸດ ${formatKip(bill.subtotal)} • ຫຼຸດ ${formatKip(bill.discountAmount)}</div>
+                      <div class="text-sm font-extrabold text-[#F25C19]">ລວມ: ${formatKip(bill.total)}</div>
+                    </div>
+                    <button
+                      type="button"
+                      onclick="buyOldBillNumbers('${bill.id}')"
+                      class="bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl shadow transition shrink-0"
+                    >
+                      ຊື້ເລກເກົ່າ
+                    </button>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      type="button"
+                      onclick="sendOrderViaWhatsApp('${bill.id}')"
+                      class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-extrabold text-[11px] py-1.5 rounded-xl transition"
+                    >
+                      💬 ສົ່ງ WhatsApp
+                    </button>
+                    <button
+                      type="button"
+                      onclick="sendOrderViaMessenger('${bill.id}')"
+                      class="bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-extrabold text-[11px] py-1.5 rounded-xl transition"
+                    >
+                      📨 ສົ່ງ Messenger
+                    </button>
+                  </div>
+                </div>
+              `;
+            })
+            .join('')}
+        </div>
+      `;
+    }
+
+    function buyOldBillNumbers(billId) {
+      const bill = state.bills.find((b) => b.id === billId);
+      if (!bill || !Array.isArray(bill.items) || bill.items.length === 0) {
+        showToast('ບໍ່ພົບລາຍການເລກໃນບິນນີ້');
+        return;
+      }
+
+      let added = 0;
+      let dupes = 0;
+      for (const it of bill.items) {
+        const res = addNumberToCart(it.number, it.amount);
+        if (res.added) added++;
+        else if (res.reason === 'duplicate') dupes++;
+      }
+
+      document.getElementById('modalTitle').textContent = '🛒 ຊື້ເລກ / ກະຕ່າສິນຄ້າ';
+      renderCartModal(document.getElementById('modalBody'));
+      showToast(`ດຶງເລກເກົ່າ ${added} ລາຍການລົງກະຕ່າແລ້ວ${dupes ? ` (ຂ້າມ ${dupes} ຊ້ຳ)` : ''}`);
+    }
+
+    // =========================================================================
+    // MODAL: "ຜົນຫວຍ"
+    // =========================================================================
+    function renderResultsModal(container) {
+      const savedResult = loadManualDrawResult();
+
+      let checkSummaryHtml = '';
+      if (savedResult && savedResult.winningNumber) {
+        const winNum = String(savedResult.winningNumber);
+        const winLast2 = winNum.length >= 2 ? winNum.slice(-2) : '';
+        const matchedGroup = winLast2 ? findAnimalGroupByLastTwo(winLast2) : null;
+
+        const matchingBills = state.bills.filter((b) =>
+          (b.items || []).some((it) => it.number === winNum || (winLast2 && it.number.endsWith(winLast2) && it.number.length === 2))
+        );
+
+        checkSummaryHtml = `
+          <div class="bg-[#FFF3EC] border border-[#FFD4BE] rounded-2xl p-3.5 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-[#F25C19]">ຜົນງວດທີ່ບັນທຶກໄວ້</span>
+              <span class="text-[11px] font-bold text-slate-600">${escapeHtml(savedResult.drawDate || '')}</span>
+            </div>
+            <div class="text-2xl font-extrabold text-slate-900 tracking-widest text-center py-1 bg-white rounded-xl border border-orange-100">
+              ${escapeHtml(winNum)}
+            </div>
+            ${
+              matchedGroup
+                ? `<div class="text-xs font-bold text-slate-700 text-center">2 ໂຕທ້າຍ (${winLast2}): ${matchedGroup.emoji.trim()} ນາມ ${String(matchedGroup.id).padStart(2, '0')} ${escapeHtml(matchedGroup.name)}</div>`
+                : ''
+            }
+            <div class="text-xs font-bold ${matchingBills.length > 0 ? 'text-emerald-700' : 'text-slate-600'} pt-1 border-t border-orange-200/70">
+              ${
+                matchingBills.length > 0
+                  ? `ພົບ ${matchingBills.length} ບິນທີ່ມີເລກກົງກັບຜົນທີ່ບັນທຶກ: ${matchingBills.map((b) => b.id).join(', ')}`
+                  : 'ຍັງບໍ່ພົບບິນທີ່ມີເລກກົງກັບຜົນທີ່ບັນທຶກໄວ້'
+              }
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="space-y-3.5">
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-xs text-amber-900 leading-relaxed">
+            <strong>ແຈ້ງເຕືອນ:</strong> ໜ້າເວັບໄຊແບບໄຟລ໌ດຽວນີ້ບໍ່ໄດ້ເຊື່ອມຕໍ່ຂໍ້ມູນຜົນຫວຍສົດແບບ Real-time ຈາກລະບົບທາງການ. ທ່ານສາມາດປ້ອນຜົນງວດດ້ວຍຕົນເອງເພື່ອບັນທຶກ ແລະ ກວດບິນໃນເຄື່ອງໄດ້.
+          </div>
+
+          ${checkSummaryHtml}
+
+          <form onsubmit="saveManualDrawForm(event)" class="space-y-3 border border-slate-200 rounded-2xl p-3.5 bg-white">
+            <div class="text-xs font-extrabold text-slate-800">ບັນທຶກຜົນງວດເພື່ອກວດບິນ</div>
+
+            <div>
+              <label for="manualDrawDateInput" class="block text-[11px] font-bold text-slate-600 mb-1">ວັນທີງວດ</label>
+              <input
+                id="manualDrawDateInput"
+                type="text"
+                value="${escapeHtml(savedResult?.drawDate || document.getElementById('drawDateDisplay').textContent)}"
+                class="w-full border border-slate-300 focus:border-[#F25C19] rounded-xl px-3 py-2 text-xs sm:text-sm font-bold outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="manualWinningNumberInput" class="block text-[11px] font-bold text-slate-600 mb-1">ເລກຜົນງວດ (2-6 ໂຕ)</label>
+              <input
+                id="manualWinningNumberInput"
+                type="text"
+                inputmode="numeric"
+                maxlength="6"
+                value="${escapeHtml(savedResult?.winningNumber || '')}"
+                oninput="sanitizeDigitInput(this, 6)"
+                placeholder="ປ້ອນເລກຜົນງວດ ເຊັ່ນ 124524"
+                class="w-full border border-slate-300 focus:border-[#F25C19] rounded-xl px-3 py-2 text-sm font-extrabold tracking-widest outline-none"
+                required
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="submit"
+                class="bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-xs sm:text-sm py-2.5 rounded-xl shadow transition"
+              >
+                ບັນທຶກ & ກວດບິນ
+              </button>
+              <button
+                type="button"
+                onclick="clearManualDrawResult()"
+                class="bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-extrabold text-xs sm:text-sm py-2.5 rounded-xl transition"
+              >
+                ລ້າງຜົນທີ່ບັນທຶກ
+              </button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function saveManualDrawForm(event) {
+      event.preventDefault();
+      const dateVal = (document.getElementById('manualDrawDateInput').value || '').trim();
+      const numVal = (document.getElementById('manualWinningNumberInput').value || '').replace(/\D+/g, '');
+      if (numVal.length < 2 || numVal.length > 6) {
+        showToast('ກະລຸນາປ້ອນເລກຜົນງວດ 2 ຫາ 6 ໂຕ');
+        return;
+      }
+      saveManualDrawResult({ drawDate: dateVal, winningNumber: numVal });
+      showToast('ບັນທຶກຜົນງວດ ແລະ ກວດບິນແລ້ວ');
+      renderResultsModal(document.getElementById('modalBody'));
+    }
+
+    function clearManualDrawResult() {
+      localStorage.removeItem(MANUAL_RESULT_KEY);
+      showToast('ລ້າງຜົນງວດທີ່ບັນທຶກແລ້ວ');
+      renderResultsModal(document.getElementById('modalBody'));
+    }
+
+    // =========================================================================
+    // SPECIAL GRID TOOLS
+    // =========================================================================
+    function makeRandomDigits(len) {
+      let s = '';
+      for (let i = 0; i < len; i++) {
+        s += String(Math.floor(Math.random() * 10));
+      }
+      return s;
+    }
+
+    function renderSpecialToolModal(container, toolKey, currentGenerated = null) {
+      const configs = {
+        random_chaotic: {
+          icon: '🤑',
+          desc: 'ສຸ່ມເລກເສດຖີແບບມົ້ວໆ ທັງເລກ 2 ໂຕ, 3 ໂຕ ແລະ 6 ໂຕ ພ້ອມສົ່ງເຂົ້າກະຕ່າໄດ້ທັນທີ.',
+          actionLabel: 'ສຸ່ມເລກເສດຖີໃໝ່',
+          generate: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(6)],
+        },
+        powder_rub: {
+          icon: '🪔',
+          desc: 'ແຕະປຸ່ມເພື່ອທາແປ້ງຂໍເລກໃຫ້ຕົວເລກຄ່ອຍໆປາກົດຂຶ້ນມາ.',
+          actionLabel: 'ທາແປ້ງຂໍເລກໃໝ່',
+          generate: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(4)],
+        },
+        guru_picks: {
+          icon: '🔮',
+          desc: 'ຊຸດເລກແນະນຳປະຈຳງວດ (ສ້າງແບບສຸ່ມເພື່ອໃຊ້ເປັນແນວທາງ).',
+          actionLabel: 'ສ້າງຊຸດເລກແນະນຳໃໝ່',
+          generate: () => [makeRandomDigits(2), makeRandomDigits(2), makeRandomDigits(3)],
+        },
+        dream_random: {
+          icon: '🌙',
+          desc: 'ສຸ່ມເລກຈາກຕຳລາສັດ 40 ນາມ ພ້ອມຊື່ນາມສັດປະຈຳເລກ.',
+          actionLabel: 'ສຸ່ມຕາມຄວາມຝັນໃໝ່',
+          generate: () => {
+            const g1 = ANIMAL_GROUPS[Math.floor(Math.random() * ANIMAL_GROUPS.length)];
+            const g2 = ANIMAL_GROUPS[Math.floor(Math.random() * ANIMAL_GROUPS.length)];
+            const n1 = g1.numbers[Math.floor(Math.random() * g1.numbers.length)];
+            const n2 = g2.numbers[Math.floor(Math.random() * g2.numbers.length)];
+            return [n1, n2, makeRandomDigits(1) + n1];
+          },
+        },
+        kuman_thong: {
+          icon: '🧸',
+          desc: 'ຂໍເລກນຳກຸມມານທອງ ໃຫ້ໂຊກລາບແບບບໍ່ຊ້ຳໃຜ.',
+          actionLabel: 'ຂໍເລກນຳກຸມມານທອງ',
+          generate: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(4)],
+        },
+        lucky_wheel: {
+          icon: '🎡',
+          desc: 'ໝຸນວົງລໍ້ທັງໂຊກທັງລວຍ ເພື່ອລຸ້ນເລກເດັດ.',
+          actionLabel: 'ໝຸນວົງລໍ້',
+          generate: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(5)],
+          isWheel: true,
+        },
+      };
+
+      const cfg = configs[toolKey] || configs.random_chaotic;
+      const picks = Array.isArray(currentGenerated) && currentGenerated.length ? currentGenerated : cfg.generate();
+      const safePicksJson = JSON.stringify(picks).replace(/"/g, '&quot;');
+
+      container.innerHTML = `
+        <div class="space-y-4 text-center">
+          <div class="bg-[#FFF3EC] border border-[#FFD4BE] rounded-2xl p-4 space-y-2">
+            <div class="${cfg.isWheel ? 'inline-block wheel-spinning' : ''} text-4xl">${cfg.icon}</div>
+            <p class="text-xs text-slate-700 leading-relaxed">${escapeHtml(cfg.desc)}</p>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            ${picks
+              .map((num) => {
+                const label = getAnimalLabelForNumber(num);
+                return `
+                  <button
+                    type="button"
+                    onclick="addSingleSpecialPick('${num}')"
+                    class="bg-white hover:bg-[#FFF8F4] active:scale-95 border-2 border-[#F25C19] rounded-2xl px-4 py-2.5 shadow-2xs transition text-center"
+                  >
+                    <div class="text-base font-extrabold text-[#F25C19] tracking-wider">${escapeHtml(num)}</div>
+                    ${label ? `<div class="text-[10px] font-bold text-slate-500 mt-0.5">${escapeHtml(label)}</div>` : '<div class="text-[10px] font-bold text-slate-400 mt-0.5">+ ເພີ່ມ</div>'}
+                  </button>
+                `;
+              })
+              .join('')}
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onclick="rerollSpecialTool('${toolKey}')"
+              class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm py-3 rounded-2xl shadow transition"
+            >
+              ${escapeHtml(cfg.actionLabel)}
+            </button>
+            <button
+              type="button"
+              onclick="addAllSpecialPicks(${safePicksJson})"
+              class="bg-[#F25C19] hover:bg-[#C94408] active:scale-95 text-white font-extrabold text-xs sm:text-sm py-3 rounded-2xl shadow transition"
+            >
+              + ເພີ່ມທັງໝົດ
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function rerollSpecialTool(toolKey) {
+      const generators = {
+        random_chaotic: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(6)],
+        powder_rub: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(4)],
+        guru_picks: () => [makeRandomDigits(2), makeRandomDigits(2), makeRandomDigits(3)],
+        dream_random: () => {
+          const g1 = ANIMAL_GROUPS[Math.floor(Math.random() * ANIMAL_GROUPS.length)];
+          const g2 = ANIMAL_GROUPS[Math.floor(Math.random() * ANIMAL_GROUPS.length)];
+          const n1 = g1.numbers[Math.floor(Math.random() * g1.numbers.length)];
+          const n2 = g2.numbers[Math.floor(Math.random() * g2.numbers.length)];
+          return [n1, n2, makeRandomDigits(1) + n1];
+        },
+        kuman_thong: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(4)],
+        lucky_wheel: () => [makeRandomDigits(2), makeRandomDigits(3), makeRandomDigits(5)],
+      };
+      const nextPicks = (generators[toolKey] || generators.random_chaotic)();
+      renderSpecialToolModal(document.getElementById('modalBody'), toolKey, nextPicks);
+    }
+
+    function addSingleSpecialPick(num) {
+      const amt = Number(document.getElementById('quickAmountInput')?.value) || 5000;
+      const res = addNumberToCart(num, amt);
+      if (res.added) {
+        showToast(`ເພີ່ມເລກ ${num} ລົງກະຕ່າແລ້ວ`);
+      } else if (res.reason === 'duplicate') {
+        showToast(`ເລກ ${num} ມີໃນກະຕ່າແລ້ວ`);
+      }
+    }
+
+    function addAllSpecialPicks(picks) {
+      const amt = Number(document.getElementById('quickAmountInput')?.value) || 5000;
+      const { addedCount, skippedDupes } = addBatchToCart(picks, amt);
+      closeModal();
+      if (addedCount > 0) {
+        showToast(`ເພີ່ມ ${addedCount} ເລກລົງກະຕ່າແລ້ວ${skippedDupes ? ` (ຂ້າມ ${skippedDupes} ຊ້ຳ)` : ''}`);
+      } else {
+        showToast('ເລກທັງໝົດມີໃນກະຕ່າແລ້ວ');
+      }
+    }
+
+    // =========================================================================
+    // INITIALIZATION
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      refreshShellUI();
+      updateCountdownClock();
+      setInterval(updateCountdownClock, 1000);
+    });
+  </script>
+</body>
+</html>
